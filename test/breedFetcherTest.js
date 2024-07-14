@@ -22,6 +22,6 @@ describe('fetchBreedDescription', () => {
       // Check that the description doesn't exist
       assert.isNull(desc);
       done();
-    })
-  })
+    });
+  });
 });
