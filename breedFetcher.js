@@ -1,18 +1,20 @@
 const needle = require('needle');
 
-const search = process.argv.slice(2);
+const fetchBreedDescription = (breedName, callback) => {
+  const url = `https://api.thecatapi.com/v1/breeds/search?q=${breedName}`;
+  needle.get(url, (error, response, body) => {
+    // check for error on getting url
+    if (error) {
+      return callback(error, null);
+    }
+    // check if invalid search query
+    if (!body[0]) {
+      return callback('Breed not found', null);
+    }
+    // if not error and valid search query
+    return callback(null, response.body[0]['description']);
+  });
+};
 
-needle.get(`https://api.thecatapi.com/v1/breeds/search?q=${search}`, (error, response) => {
-  const firstBody = response.body[0]; // makes first body result easier to access
-  // check if error returns while fetching URL
-  if (error) {
-    console.error(error);
-    return;
-  }
-  // check if search returns no results
-  if (!firstBody) {
-    console.log(`Search term: "${search}" not found...`);
-    return;
-  }
-  console.log(firstBody['description']);
-});
+
+module.exports = { fetchBreedDescription };
